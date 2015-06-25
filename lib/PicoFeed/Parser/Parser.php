@@ -98,6 +98,14 @@ abstract class Parser
     private $grabber_ignore_urls = array();
 
     /**
+     * Limit the number of items to parse from the tree
+     *
+     * @access private
+     * @var bool
+     */
+    private $limit_number_items_to_parse = 0;
+
+    /**
      * Constructor
      *
      * @access public
@@ -161,7 +169,13 @@ abstract class Parser
         $this->findFeedLogo($xml, $feed);
         $this->findFeedIcon($xml, $feed);
 
+        $indexItemTree = 0;
+
         foreach ($this->getItemsTree($xml) as $entry) {
+
+            if ($this->limit_number_items_to_parse && $indexItemTree == $this->limit_number_items_to_parse) {
+                break;
+            }
 
             $item = new Item;
             $item->xml = $entry;
@@ -187,6 +201,7 @@ abstract class Parser
             $this->scrapWebsite($item);
 
             $feed->items[] = $item;
+            $indexItemTree++;
         }
 
         Logger::setMessage(get_called_class().PHP_EOL.$feed);
@@ -418,6 +433,19 @@ abstract class Parser
     public function setGrabberIgnoreUrls(array $urls)
     {
         $this->grabber_ignore_urls = $urls;
+    }
+
+    /**
+     * Set the limit of number of items to parse. Limit is active if bigger than 0.
+     *
+     * @access public
+     * @param  bool  $limit   Number
+     * @return \PicoFeed\Parser\Parser
+     */
+    public function setLimitNumberItemsToParse($limit)
+    {
+        $this->limit_number_items_to_parse = $limit;
+        return $this;
     }
 
     /**
