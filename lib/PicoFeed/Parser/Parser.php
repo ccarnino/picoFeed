@@ -98,12 +98,12 @@ abstract class Parser
     private $grabber_ignore_urls = array();
 
     /**
-     * Limit the number of items to parse from the tree
+     * Set the maximum number of items to parse from the tree
      *
      * @access private
-     * @var bool
+     * @var int
      */
-    private $limit_number_items_to_parse = 0;
+    private $max_items = -1;
 
     /**
      * Constructor
@@ -169,13 +169,11 @@ abstract class Parser
         $this->findFeedLogo($xml, $feed);
         $this->findFeedIcon($xml, $feed);
 
-        $indexItemTree = 0;
+        $itemsTree = $this->getItemsTree($xml);
 
-        foreach ($this->getItemsTree($xml) as $entry) {
+        for ($indexEntry = 0; $indexEntry < count($itemsTree) && $indexEntry < $this->max_items; $indexEntry++) {
 
-            if ($this->limit_number_items_to_parse && $indexItemTree == $this->limit_number_items_to_parse) {
-                break;
-            }
+            $entry = $itemsTree[$indexEntry];
 
             $item = new Item;
             $item->xml = $entry;
@@ -201,7 +199,6 @@ abstract class Parser
             $this->scrapWebsite($item);
 
             $feed->items[] = $item;
-            $indexItemTree++;
         }
 
         Logger::setMessage(get_called_class().PHP_EOL.$feed);
@@ -436,15 +433,15 @@ abstract class Parser
     }
 
     /**
-     * Set the limit of number of items to parse. Limit is active if bigger than 0.
+     * Set the maximum number of items to parse. Limit is active if positive.
      *
      * @access public
-     * @param  bool  $limit   Number
+     * @param  int  $maxItems   Number
      * @return \PicoFeed\Parser\Parser
      */
-    public function setLimitNumberItemsToParse($limit)
+    public function setMaximumNumberItemsToParse($maxItems)
     {
-        $this->limit_number_items_to_parse = $limit;
+        $this->max_items = $maxItems;
         return $this;
     }
 
