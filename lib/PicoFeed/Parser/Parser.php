@@ -171,7 +171,9 @@ abstract class Parser
 
         $itemsTree = $this->getItemsTree($xml);
 
-        for ($indexEntry = 0; $indexEntry < count($itemsTree) && $indexEntry < $this->max_items; $indexEntry++) {
+        for ($indexEntry = 0;
+             $indexEntry < count($itemsTree) && ($this->max_items == -1 || $indexEntry < $this->max_items);
+             $indexEntry++) {
 
             $entry = $itemsTree[$indexEntry];
 
