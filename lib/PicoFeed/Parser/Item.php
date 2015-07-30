@@ -68,6 +68,14 @@ class Item
     public $date = null;
 
     /**
+     * Item raw content html
+     *
+     * @access public
+     * @var string
+     */
+    public $rawContent = '';
+
+    /**
      * Item content
      *
      * @access public
@@ -203,6 +211,17 @@ class Item
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * Get raw content
+     *
+     * @access public
+     * $return string
+     */
+    public function getRawContent()
+    {
+        return $this->rawContent;
     }
 
     /**

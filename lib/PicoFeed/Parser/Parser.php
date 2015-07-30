@@ -272,6 +272,7 @@ abstract class Parser
             $grabber->execute();
 
             if ($grabber->hasRelevantContent()) {
+                $item->rawContent = $grabber->getRawContent();
                 $item->content = $grabber->getFilteredContent();
             }
         }
